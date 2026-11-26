@@ -9,12 +9,28 @@ Un calendario sencillo, parecido a Google Calendar, con una bandeja de **pendien
 3. Solo al aceptar, la actividad entra al **calendario** (vista de mes y de semana).
 4. Al crear una actividad o al aceptar un pendiente se puede crear una **reunión en Google Meet**: eliges los correos de una lista, Google les manda la invitación y el link queda pegado en el mensaje de WhatsApp.
 5. Una IA ayuda a leer los mensajes, a redactar respuestas e invitaciones y a contestar preguntas sobre la agenda.
+6. Se **comparte la agenda** de la semana o del mes por WhatsApp, se imprime para la cartelera y se saca el **informe del mes** (actividades por eje y personas que asistieron) para aliados y donantes.
+7. La primera vez que alguien abre la agenda aparece un **recorrido guiado**. Se repite desde **Ayuda**, que también trae guías cortas y preguntas frecuentes.
+
+## Novedades de la versión 1.1
+
+- **Recorrido guiado** la primera vez y botón **Ayuda** con guías paso a paso y preguntas frecuentes.
+- **Colores por eje** (Formación, Comunidad, Economía circular, Equipo) en el calendario, con una leyenda que también sirve de filtro.
+- **Vista Lista** con buscador. En el celular es la vista inicial.
+- **Compartir**: la agenda de hoy, de la semana o del mes por WhatsApp, copiada o impresa.
+- **Informe del mes** con actividades por eje, asistentes y mensajes recibidos, para enviar o imprimir.
+- **Asistentes** en cada actividad, para el informe.
+- **Copia de seguridad**: descargar y restaurar la agenda en un archivo (sin la clave de IA). Sirve para pasarla a otro computador.
+- **Datos de ejemplo** marcados con un aviso y un botón para empezar con la agenda vacía.
+- **Letra más grande** en Ajustes.
+- Aviso en los pendientes que llevan dos días o más sin respuesta.
+- Corregido el doble punto en «3:00 p. m..» de las respuestas e invitaciones (DEF-01).
 
 ## Cómo usarla
 
 Abre `fondacio.html` en el navegador. No necesita instalación ni servidor.
 
-Para activar la IA, entra a **Ajustes IA**, elige un proveedor (Groq, Gemini y OpenRouter tienen capa gratis) y pega tu clave. También puedes copiar `clave.example.js` como `clave.js` con tu clave, y la página la carga sola. `clave.js` está excluido del repositorio.
+Para activar la IA, entra a **Ajustes**, elige un proveedor (Groq, Gemini y OpenRouter tienen capa gratis) y pega tu clave. También puedes copiar `clave.example.js` como `clave.js` con tu clave, y la página la carga sola. `clave.js` está excluido del repositorio.
 
 Las reuniones de Meet son la excepción: Google no permite iniciar sesión desde un archivo abierto con doble clic, así que para esa parte la página tiene que abrirse desde una dirección web (abajo está cómo).
 
@@ -58,12 +74,12 @@ El permiso de Google dura más o menos una hora. Cuando vence, al siguiente clic
 Tienes dos opciones:
 
 - **Para todos (recomendado al publicar):** en `fondacio.html` busca la línea `const GOOGLE_CLIENT_ID=window.GOOGLE_CLIENT_ID||"";`, pega el ID entre las últimas comillas y súbelo al repositorio. Así nadie tiene que configurar nada.
-- **Solo en un navegador:** en **Ajustes IA → Google Calendar y Meet** pega el ID y guarda.
+- **Solo en un navegador:** en **Ajustes → Google Calendar y Meet** pega el ID y guarda.
 
 **5. Abrirla desde una dirección web**
 
 - **Para probar en tu computador:** abre una terminal en la carpeta del proyecto y ejecuta `python -m http.server 5500`. Luego abre `http://localhost:5500/fondacio.html`. Tiene que ser `localhost`, no `127.0.0.1`, porque Google compara la dirección exacta.
-- **Publicada:** en GitHub, **Settings → Pages → Deploy from a branch → main / (root)**. Queda en `https://TU-USUARIO.github.io/fondacio/fondacio.html`.
+- **Publicada:** en GitHub, **Settings → Pages → Deploy from a branch → main / (root)**. Queda en `https://TU-USUARIO.github.io/fondacio-agenda/fondacio.html`.
 
 ### Lo que va a ver cada persona la primera vez
 
@@ -78,8 +94,22 @@ Al dar "Crear reunión en Meet" se abre la ventana de Google para elegir la cuen
 
 ## Datos
 
-Se guardan en el navegador de cada persona. No se comparten entre dispositivos. Los mensajes y actividades de ejemplo no son reales. Las reuniones de Meet sí quedan en el Google Calendar de quien las crea.
+Se guardan en el navegador de cada persona (clave `fondacio_v3` de `localStorage`). No se comparten entre dispositivos: para pasarlos a otro computador, en **Ajustes → Tus datos** se descarga una copia de seguridad y se restaura en el otro. La copia no incluye la clave de IA.
+
+Los mensajes y actividades de ejemplo no son reales; se borran con **Empezar con mi agenda vacía**. Las reuniones de Meet sí quedan en el Google Calendar de quien las crea.
+
+El recorrido guiado se marca como visto con la clave `fondacio_tour_v1`. Para mostrarlo de nuevo: **Ayuda → Ver el recorrido guiado**. Para abrir la página sin recorrido (por ejemplo en pruebas), se agrega `?sinTour` a la dirección.
+
+## Pruebas
+
+`pruebas/flujos_v11.py` recorre la agenda de punta a punta con Playwright (45 verificaciones):
+
+```
+pip install playwright
+playwright install chromium
+python pruebas/flujos_v11.py
+```
 
 ## Estado
 
-Beta. El mensaje o el chat se pega a mano: la lectura automática de WhatsApp es la siguiente fase.
+Versión 1.1. El mensaje o el chat se pega a mano: la lectura automática de WhatsApp es la siguiente fase.
