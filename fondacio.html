@@ -4,15 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fondacio Agenda</title>
+<meta name="description" content="Agenda de la Fundación Fondacio con bandeja de pendientes de WhatsApp">
+<meta name="theme-color" content="#1F4FD8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%231F4FD8'/%3E%3Cpath fill='%23fff' d='M17 6h-1V5h-1.5v1h-5V5H8v1H7a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 7 19h10a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 17 6zm0 11.5H7V10h10v7.5zM8.5 11.5H12V15H8.5z'/%3E%3C/svg%3E">
 <style>
 :root{
   --ground:#F4F5F7;--sheet:#FFFFFF;--field:#F8F9FA;--ink:#14181F;--ink-2:#4A5260;--muted:#6C7480;
   --line:#E1E4E9;--acc:#1F4FD8;--acc-d:#173CAA;--acc-bg:#E9EEFC;--acc-ink:#fff;--focus:#14181F;--danger:#B3261E;
+  /* un color por eje de trabajo; el texto encima es blanco */
+  --c-form:#1F4FD8;--c-com:#0B7A3E;--c-eco:#B45309;--c-eq:#7B3FBF;--c-ink:#fff;
+  --warn-bg:#FFF4CE;--warn-ink:#6B4E00;--ok-bg:#E6F4EA;--ok-ink:#0B5C2F;
 }
 @media (prefers-color-scheme:dark){:root{
   --ground:#0F1115;--sheet:#171A20;--field:#12151A;--ink:#EEF0F3;--ink-2:#B5BBC6;--muted:#8A919D;
   --line:#2A2F38;--acc:#7C9CFF;--acc-d:#9DB6FF;--acc-bg:#1B2440;--acc-ink:#0F1115;--focus:#EEF0F3;--danger:#FF8A80;
+  --c-form:#8AB4FF;--c-com:#6DD58C;--c-eco:#FFB870;--c-eq:#D0A8FF;--c-ink:#0F1115;
+  --warn-bg:#3A2F0B;--warn-ink:#FFD978;--ok-bg:#0F2E1C;--ok-ink:#8CE0A8;
 }}
+.e-form{--ec:var(--c-form)}.e-com{--ec:var(--c-com)}.e-eco{--ec:var(--c-eco)}.e-eq{--ec:var(--c-eq)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth}
@@ -77,11 +86,12 @@ header.top .btn:not(.pri):hover{background:var(--field)}
 .day:hover .n{background:var(--line)}
 .day.today .n,.day.today:hover .n{background:var(--acc);color:var(--acc-ink)}
 .chip{display:block;font-size:12px;line-height:20px;border-radius:4px;padding:0 6px 0 4px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;border:0;width:100%;text-align:left;background:none;color:var(--ink)}
-.chip::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--acc);margin-right:6px;vertical-align:1px}
-.chip:hover{background:var(--line)}
+.chip::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ec,var(--acc));margin-right:6px;vertical-align:1px}
+.chip{background:color-mix(in srgb,var(--ec,var(--acc)) 12%,transparent)}
+.chip:hover{background:color-mix(in srgb,var(--ec,var(--acc)) 24%,transparent)}
 .more{font-size:12px;font-weight:500;color:var(--ink-2);padding:0 6px;text-align:left;border-radius:4px}
 .more:hover{background:var(--line)}
-@media(max-width:600px){.day{min-height:56px}.cal .chip{font-size:0;height:6px;padding:0;background:var(--acc);margin-top:2px}.cal .chip::before{display:none}}
+@media(max-width:600px){.day{min-height:56px}.cal .chip{font-size:0;height:6px;padding:0;background:var(--ec,var(--acc));margin-top:2px}.cal .chip::before{display:none}}
 .wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
 @media(max-width:760px){.wk{grid-template-columns:1fr}.wd{min-height:150px}}
 .wd{border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;padding:8px 4px;min-height:300px;cursor:pointer;background:var(--sheet)}
@@ -91,9 +101,9 @@ header.top .btn:not(.pri):hover{background:var(--field)}
 .wd:hover .wh b{background:var(--line)}
 .wd.today .wh{color:var(--acc)}
 .wd.today .wh b,.wd.today:hover .wh b{background:var(--acc);color:var(--acc-ink)}
-.wev{display:block;width:100%;text-align:left;border:0;background:var(--acc);color:var(--acc-ink);border-left:0;border-radius:4px;padding:4px 8px;margin-bottom:2px;cursor:pointer;font-size:12px;font-weight:500;line-height:1.35;box-shadow:none}
-.wev:hover{background:var(--acc-d);box-shadow:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15)}
-.wev span{display:block;color:var(--acc-ink);opacity:.9;font-size:12px;font-weight:400}
+.wev{display:block;width:100%;text-align:left;border:0;background:var(--ec,var(--acc));color:var(--c-ink);border-left:0;border-radius:4px;padding:4px 8px;margin-bottom:2px;cursor:pointer;font-size:12px;font-weight:500;line-height:1.35;box-shadow:none}
+.wev:hover{filter:brightness(.92);box-shadow:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15)}
+.wev span{display:block;color:var(--c-ink);opacity:.92;font-size:12px;font-weight:400}
 
 /* panel lateral */
 .pan{padding:0;overflow:hidden;border-left:1px solid var(--line)}
@@ -155,6 +165,80 @@ dialog::backdrop{background:rgba(32,33,36,.4)}
 .inv .x{flex:none;border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;width:30px;height:30px;border-radius:50%}
 .inv .x:hover{color:var(--ink)}
 
+/* acciones de la barra superior */
+.acc{display:flex;gap:4px;flex-wrap:wrap}
+.ico{display:inline-block;width:18px;height:18px;flex:none;background:currentColor;-webkit-mask:var(--i) center/18px no-repeat;mask:var(--i) center/18px no-repeat}
+.i-share{--i:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z'/></svg>")}
+.i-help{--i:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2v2zm2.1-7.7-.9.9c-.7.7-1.2 1.3-1.2 2.8h-2v-.5c0-1.1.5-2.1 1.2-2.8l1.2-1.3A2 2 0 0 0 12 7a2 2 0 0 0-2 2H8a4 4 0 1 1 7.1 2.3z'/></svg>")}
+.i-set{--i:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.4 2.9a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1L11 21h4l.4-2.9a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5L19.4 13zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z'/></svg>")}
+
+/* columna lateral: cómo funciona y colores de los ejes */
+.ley{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;padding:0;list-style:none}
+.ley button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--sheet);color:var(--ink-2);border-radius:99px;padding:2px 10px;font-size:12px;cursor:pointer;min-height:28px}
+.ley button::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--ec)}
+.ley button:hover{background:var(--field)}
+.ley button[aria-pressed=true]{border-color:var(--ec);background:color-mix(in srgb,var(--ec) 14%,transparent);color:var(--ink);font-weight:500}
+
+/* aviso de datos de ejemplo */
+.aviso{background:var(--warn-bg);color:var(--warn-ink);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:13px}
+.aviso p{margin:0 0 8px}
+.aviso .btn{border-color:transparent}
+
+/* vista Lista */
+.lis{border-top:1px solid var(--line)}
+.lis-top{display:flex;gap:8px;align-items:center;padding:12px 4px 8px}
+.lis-top input{border-radius:24px;padding-left:16px;min-height:40px}
+.lis-dia{display:grid;grid-template-columns:86px minmax(0,1fr);gap:4px 12px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.lis-dia .fd{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;line-height:1.3}
+.lis-dia .fd b{display:block;font-size:24px;font-weight:400;color:var(--ink-2);letter-spacing:0}
+.lis-dia.hoy .fd,.lis-dia.hoy .fd b{color:var(--acc)}
+.lev{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:0;background:none;padding:6px 8px;border-radius:8px;cursor:pointer;color:var(--ink)}
+.lev:hover{background:var(--field)}
+.lev::before{content:"";flex:none;width:4px;align-self:stretch;border-radius:4px;background:var(--ec,var(--acc))}
+.lev .hh{flex:none;width:96px;color:var(--ink-2);font-size:13px}
+.lev .tt{font-weight:500}
+.lev .mm{display:block;color:var(--ink-2);font-size:13px}
+.lis-vacio{padding:24px 8px;text-align:center;color:var(--muted)}
+@media(max-width:600px){.lis-dia{grid-template-columns:56px minmax(0,1fr)}.lev .hh{width:72px}}
+
+@media(max-width:600px){.lado .steps{display:none}.ley{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.ley button{flex:none}}
+.pill.alerta{background:var(--warn-bg);color:var(--warn-ink)}
+.pill.ok{background:var(--ok-bg);color:var(--ok-ink)}
+
+/* compartir e informe */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:12px 0}
+.stat{background:var(--field);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:24px;font-weight:500;line-height:1.2}
+.stat span{font-size:12px;color:var(--ink-2)}
+.barra{display:grid;grid-template-columns:130px minmax(0,1fr) 28px;gap:8px;align-items:center;font-size:13px;margin:4px 0}
+.barra i{display:block;height:10px;border-radius:5px;background:var(--ec);min-width:2px}
+.tabs2{margin:12px 0 4px}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:400;color:var(--ink);margin:10px 0 0}
+.chk input{width:auto;accent-color:var(--acc)}
+
+/* ayuda */
+.ayuda details{margin-top:8px}
+.ayuda ol,.ayuda ul{margin:8px 0 0;padding-left:20px}
+.ayuda li{margin:3px 0}
+.sep{border:0;border-top:1px solid var(--line);margin:18px 0 4px}
+
+/* recorrido guiado */
+.tour-bloq{position:fixed;inset:0;z-index:20;background:transparent}
+.tour-hueco{position:fixed;z-index:21;border-radius:12px;box-shadow:0 0 0 3px var(--acc),0 0 0 200vmax rgba(10,12,16,.62);pointer-events:none;transition:all .25s ease}
+.tour-hueco.sin{box-shadow:0 0 0 200vmax rgba(10,12,16,.62);width:0!important;height:0!important}
+.tour-card{position:fixed;z-index:22;width:min(360px,calc(100vw - 24px));background:var(--sheet);color:var(--ink);border-radius:16px;padding:18px 18px 14px;box-shadow:0 24px 38px 3px rgba(0,0,0,.2),0 9px 46px 8px rgba(0,0,0,.16)}
+.tour-card h2{font-size:18px;font-weight:500;margin:0 0 6px}
+.tour-card p{margin:0 0 8px;color:var(--ink-2)}
+.tour-card .pie{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tour-card .pts{display:flex;gap:4px}
+.tour-card .pts i{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.tour-card .pts i.on{background:var(--acc);width:16px;border-radius:3px}
+.tour-card.centro{left:50%!important;top:50%!important;transform:translate(-50%,-50%);width:min(440px,calc(100vw - 24px))}
+@media(max-width:600px){.tour-card:not(.centro){left:12px!important;right:12px;width:auto;top:auto!important;bottom:12px}}
+
+/* letra más grande (Ajustes → Apariencia) */
+html.grande .wrap,html.grande dialog{zoom:1.15}
+
 /* ===== diseño de pantalla completa tipo Google Calendar (pantallas anchas) ===== */
 @media (min-width:1280px){
   body{background:var(--ground)}
@@ -166,22 +250,30 @@ dialog::backdrop{background:rgba(32,33,36,.4)}
   h1 small{font-size:11px;margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   #bNew{grid-area:2/1;justify-self:start;align-self:start;margin:8px 0 20px;min-height:56px;padding:0 24px 0 18px;border-radius:16px;font-size:14px}
-  #bSet{grid-area:1/3;justify-self:end;align-self:center;border:1px solid var(--muted);color:var(--ink);min-height:40px;padding:0 20px}
+  #topAcc{grid-area:1/3;justify-self:end;align-self:center;flex-wrap:nowrap}
+  header.top #topAcc .btn{border:1px solid var(--muted);color:var(--ink);min-height:40px;padding:0 12px}
 
-  .steps{grid-area:3/1;align-self:start;flex-direction:column;flex-wrap:nowrap;gap:14px;margin:0;padding:0 8px 0 12px;font-size:13px;color:var(--ink-2);max-height:100%;overflow:auto}
+  .lado{grid-area:3/1;align-self:start;max-height:100%;overflow:auto;padding:0 8px 0 12px}
+  .steps{flex-direction:column;flex-wrap:nowrap;gap:14px;margin:0 0 20px;font-size:13px;color:var(--ink-2)}
+  .ley{flex-direction:column;align-items:flex-start}
+  .ley::before{content:"Ejes de trabajo";font-size:16px;font-weight:500;color:var(--ink);margin-bottom:4px}
   .steps::before{content:"Cómo funciona";font-size:16px;font-weight:500;color:var(--ink);margin-bottom:2px}
   .steps li{position:relative;padding-left:30px}
   .steps li::before{position:absolute;left:0;top:0;width:20px;height:20px;margin:0}
 
   .tb{grid-area:1/2;align-self:center;margin:0;flex-wrap:nowrap}
-  .tb #hoy{min-height:40px;padding:0 24px;border-color:var(--muted);font-size:14px}
+  .tb #hoy{min-height:40px;padding:0 18px;border-color:var(--muted);font-size:14px}
+  #calLis{overflow-y:auto;padding:0 12px}
+  .lis{border-top:0}
   .tb #prev,.tb #next{width:40px;min-height:40px}
   .tb strong{white-space:nowrap}
   .tb select{min-height:40px;border-color:var(--muted)}
   .seg{border-color:var(--muted)}
-  .seg button{min-height:38px}
+  .seg button{min-height:38px;padding:0 12px}
+  .tb>.row:first-child{min-width:0;flex-wrap:nowrap}
+  .tb strong{overflow:hidden;text-overflow:ellipsis;min-width:0}
 
-  #calMes,#calSem{grid-area:2/2/4/3;background:var(--sheet);border:0;border-radius:24px;overflow:hidden;min-height:0}
+  #calMes,#calSem,#calLis{grid-area:2/2/4/3;background:var(--sheet);border:0;border-radius:24px;overflow:hidden;min-height:0}
   .cal{grid-template-rows:auto repeat(6,minmax(max-content,1fr))}
   #calMes{overflow-x:hidden;overflow-y:auto}
   .dow{padding-top:10px;background:transparent}
@@ -201,6 +293,9 @@ dialog::backdrop{background:rgba(32,33,36,.4)}
   .pp{flex:1;min-height:0;max-height:none}
   .chat{flex:1;min-height:0;height:auto}
 }
+@media (min-width:1280px){.tb>.row:last-child{flex-wrap:nowrap}}
+/* entre 1280 y 1439 px no cabe todo: el filtro por eje queda en la columna lateral */
+@media (min-width:1280px) and (max-width:1439px){#fEje{display:none}}
 @media (min-width:1600px){
   .wrap{grid-template-columns:256px minmax(0,1fr) 380px}
   h1{font-size:22px}
@@ -223,16 +318,25 @@ dialog::backdrop{background:rgba(32,33,36,.4)}
   <h1>Fondacio · Agenda<small>Altos de Cazucá · un calendario sencillo con bandeja de pendientes de WhatsApp</small></h1>
   <div class="row">
     <button class="btn pri" id="bNew">+ Crear actividad</button>
-    <button class="btn" id="bSet">Ajustes IA</button>
+    <div class="acc" id="topAcc">
+      <button class="btn" id="bShare" title="Enviar la agenda por WhatsApp, imprimirla o sacar el informe del mes"><span class="ico i-share"></span>Compartir</button>
+      <button class="btn" id="bHelp" title="Recorrido guiado y preguntas frecuentes"><span class="ico i-help"></span>Ayuda</button>
+      <button class="btn" id="bSet" title="IA, Google Meet, copia de seguridad y letra grande"><span class="ico i-set"></span>Ajustes</button>
+    </div>
   </div>
 </header>
 
 <main id="resumen">
-  <ol class="steps" aria-label="Cómo funciona">
-    <li>Te llega un mensaje por WhatsApp: pégalo o importa el chat en <strong>Pendientes</strong>.</li>
-    <li>Decide: <strong>aceptar</strong>, <strong>preguntar</strong> o <strong>rechazar</strong>.</li>
-    <li>Al aceptar pasa al calendario y respondes por WhatsApp desde aquí.</li>
-  </ol>
+  <aside class="lado">
+    <div class="aviso" id="avEj" hidden><p>Estás viendo <strong>datos de ejemplo</strong> para conocer la agenda.</p>
+      <div class="row"><button class="btn sm pri" id="bVaciar">Empezar con mi agenda vacía</button><button class="btn sm" id="bMantener">Mantenerlos</button></div></div>
+    <ol class="steps" aria-label="Cómo funciona">
+      <li>Te llega un mensaje por WhatsApp: pégalo o importa el chat en <strong>Pendientes</strong>.</li>
+      <li>Decide: <strong>aceptar</strong>, <strong>preguntar</strong> o <strong>rechazar</strong>.</li>
+      <li>Al aceptar pasa al calendario y respondes por WhatsApp desde aquí.</li>
+    </ol>
+    <div class="ley" id="ley" role="group" aria-label="Ejes de trabajo: toca uno para ver solo ese"></div>
+  </aside>
 
   <div class="grid main">
     <section class="card" aria-label="Calendario">
@@ -241,10 +345,14 @@ dialog::backdrop{background:rgba(32,33,36,.4)}
           <button class="btn sm" id="prev" aria-label="Anterior">‹</button><button class="btn sm" id="next" aria-label="Siguiente">›</button>
           <strong id="titulo"></strong></div>
         <div class="row"><select id="fEje" style="width:auto" aria-label="Filtrar por eje"></select>
-          <div class="seg" role="tablist"><button role="tab" id="vMes" aria-selected="true">Mes</button><button role="tab" id="vSem" aria-selected="false">Semana</button></div></div>
+          <div class="seg" role="tablist"><button role="tab" id="vMes" aria-selected="true">Mes</button><button role="tab" id="vSem" aria-selected="false">Semana</button><button role="tab" id="vLis" aria-selected="false">Lista</button></div></div>
       </div>
       <div id="calMes" class="cal"></div>
       <div id="calSem" class="wk" hidden></div>
+      <div id="calLis" class="lis" hidden>
+        <div class="lis-top"><input type="search" id="buscar" placeholder="Buscar por actividad, lugar o persona" aria-label="Buscar actividades"></div>
+        <div id="lisBody"></div>
+      </div>
     </section>
 
     <section class="card pan" aria-label="Pendientes y asistente">
@@ -290,6 +398,11 @@ const fechaLarga=s=>{const d=pf(s);return`${DIAS[d.getDay()]} ${d.getDate()} de 
 const ord=(a,b)=>(a.fecha+a.ini).localeCompare(b.fecha+b.ini);
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const mins=h=>{const[a,b]=h.split(":").map(Number);return a*60+b};
+/* Hora corta para las celdas del mes: «6:30 pm», «9 am». */
+const horaCorta=h=>{if(!h)return"";let[a,b]=h.split(":").map(Number);const p=a>=12?"pm":"am";a=a%12||12;return`${a}${b?":"+pad(b):""} ${p}`};
+/* Cierra una frase con punto sin duplicarlo cuando ya termina en «p. m.» o «a. m.» (DEF-01). */
+const punto=s=>/[.!?]$/.test(s)?s:s+".";
+const VERSION="1.1";
 
 /* Todos usan el mismo formato (compatible con OpenAI), por eso cambiar de proveedor es solo cambiar la dirección, la clave y el modelo. */
 const PROV={
@@ -321,19 +434,23 @@ function seed(){
        texto:"Buenas! Estamos organizando una jornada con las familias del barrio, apenas tengamos fecha les confirmamos."}
     ],
     cfg:{key:"",prov:"groq",model:"openai/gpt-oss-120b"},
-    chat:[]
+    chat:[],
+    ejemplo:true
   };
 }
-/* La clave de la IA se lee de un archivo local aparte, clave.js (no se sube a GitHub). Sin ese archivo, se pega una vez en Ajustes IA. */
+const TITULOS_EJEMPLO=["Reunión de equipo","Jornada de clasificación de ropa","Feria de economía circular"];
+/* La clave de la IA se lee de un archivo local aparte, clave.js (no se sube a GitHub). Sin ese archivo, se pega una vez en Ajustes. */
 const CLAVE_INCLUIDA=window.CLAVE_INCLUIDA||"";
 /* Google Calendar y Meet: el ID de cliente OAuth NO es secreto. Para publicar la página, pégalo entre las comillas del final
-   (así nadie tiene que configurarlo). También se puede poner en clave.js o en Ajustes IA. */
-const GOOGLE_CLIENT_ID=window.GOOGLE_CLIENT_ID||"";
+   (así nadie tiene que configurarlo). También se puede poner en clave.js o en Ajustes. */
+const GOOGLE_CLIENT_ID=window.GOOGLE_CLIENT_ID||"1057600977627-h5u875qjo10iq3u04ps5lms15louptks.apps.googleusercontent.com";
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 if(!S||!S.eventos)S=seed();
 S.cfg=S.cfg||{};if(!PROV[S.cfg.prov]){S.cfg.prov="groq";S.cfg.model=PROV.groq.model}S.cfg.key=S.cfg.key||CLAVE_INCLUIDA;if(S.cfg.model==="llama-3.3-70b-versatile")S.cfg.model=PROV.groq.model;S.chat=S.chat||[];S.pend=S.pend||seed().pend;
 S.contactos=Array.isArray(S.contactos)?S.contactos:[];
+/* Agendas guardadas antes de la versión 1.1: si solo tienen las actividades de ejemplo, se marcan como ejemplo. */
+if(S.ejemplo===undefined)S.ejemplo=S.eventos.length>0&&S.eventos.every(e=>TITULOS_EJEMPLO.includes(e.titulo));
 S.pend.forEach(p=>{if(p.tipo!==undefined)return;const a=analizar(p.texto||"",p.recibido?new Date(p.recibido):null);
   ["tipo","org","persona","plazo","resumen"].forEach(k=>{if(p[k]===undefined)p[k]=a[k]||""});if(!p.titulo&&a.titulo)p.titulo=a.titulo});
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast("No se pudo guardar en este navegador")}}
@@ -360,7 +477,7 @@ function cargarGoogle(){
 }
 function avisoGoogle(){
   if(location.protocol==="file:")return"Para crear reuniones en Meet abre la agenda desde su dirección web (o http://localhost), no con doble clic al archivo.";
-  if(!idGoogle())return"Falta conectar Google: pon el ID de cliente en Ajustes IA, en la parte de Google Calendar y Meet.";
+  if(!idGoogle())return"Falta conectar Google: pon el ID de cliente en Ajustes, en la parte de Google Calendar y Meet.";
   return"";
 }
 function tokenGoogle(){
@@ -547,25 +664,46 @@ function hace(ts){const m=Math.round((Date.now()-new Date(ts))/60000);if(m<1)ret
 const palabras=t=>(t||"").trim().split(/\s+/).filter(Boolean).length;
 
 /* ---------- estado de las vistas ---------- */
-let cursor=new Date(),vista="mes",ejeSel="";
+/* En el celular arranca en la vista Lista, que se lee mejor en pantalla angosta. */
+let cursor=new Date(),vista=matchMedia("(max-width:600px)").matches?"lis":"mes",ejeSel="",verPasadas=false;
 const visibles=()=>S.eventos.filter(e=>!ejeSel||e.eje===ejeSel).sort(ord);
 function lunes(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
 
 function render(){renderCal();renderPend();renderFiltro()}
 function renderFiltro(){
   $("#fEje").innerHTML=`<option value="">Todos los ejes</option>`+Object.entries(EJES).map(([k,v])=>`<option value="${k}" ${k===ejeSel?"selected":""}>${v}</option>`).join("");
+  $("#ley").innerHTML=Object.entries(EJES).map(([k,v])=>`<button type="button" class="e-${k}" data-eje="${k}" aria-pressed="${k===ejeSel}">${v}</button>`).join("");
+  $("#avEj").hidden=!S.ejemplo;
+}
+const tituloEv=e=>`${e.titulo} · ${hora(e.ini)}${e.fin?" a "+hora(e.fin):""}${e.lugar?" · "+e.lugar:""}`;
+function renderLista(){
+  const q=$("#buscar").value.trim().toLowerCase(),hoy=iso(new Date());
+  let evs=visibles();
+  if(q)evs=evs.filter(e=>[e.titulo,e.lugar,e.con,e.obj].join(" ").toLowerCase().includes(q));
+  else if(!verPasadas)evs=evs.filter(e=>e.fecha>=hoy);
+  $("#titulo").textContent=q?"Resultados de la búsqueda":verPasadas?"Todas las actividades":"Próximas actividades";
+  const dias=[...new Set(evs.map(e=>e.fecha))];
+  const manana=iso(new Date(Date.now()+864e5));
+  let h=dias.map(k=>{const d=pf(k),de=evs.filter(e=>e.fecha===k);
+    const rel=k===hoy?"Hoy":k===manana?"Mañana":DIAS[d.getDay()].slice(0,3);
+    return`<div class="lis-dia ${k===hoy?"hoy":""}"><div class="fd">${rel}<b>${d.getDate()}</b>${MESES[d.getMonth()].slice(0,3)}</div><div>${de.map(e=>`<button class="lev e-${e.eje}" data-ev="${e.id}" title="${esc(tituloEv(e))}"><span class="hh">${esc(hora(e.ini))}${e.fin?"<br>"+esc(hora(e.fin)):""}</span><span><span class="tt">${esc(e.titulo)}</span><span class="mm">${[e.lugar,e.con&&"con "+e.con,e.meet&&"Meet",EJES[e.eje]].filter(Boolean).map(esc).join(" · ")}</span></span></button>`).join("")}</div></div>`}).join("");
+  if(!h)h=`<p class="lis-vacio">${q?"No encontré actividades con «"+esc(q)+"».":"No hay actividades próximas"+(ejeSel?" en "+esc(EJES[ejeSel]):"")+". Usa <strong>+ Crear actividad</strong> o acepta un pendiente."}</p>`;
+  if(!q)h+=`<p style="text-align:center;margin:14px 0"><button type="button" class="btn sm" id="bPasadas">${verPasadas?"Ver solo las próximas":"Ver también las pasadas"}</button></p>`;
+  $("#lisBody").innerHTML=h;
 }
 function renderCal(){
-  $("#calMes").hidden=vista!=="mes";$("#calSem").hidden=vista!=="sem";
-  $("#vMes").setAttribute("aria-selected",vista==="mes");$("#vSem").setAttribute("aria-selected",vista==="sem");
+  $("#calMes").hidden=vista!=="mes";$("#calSem").hidden=vista!=="sem";$("#calLis").hidden=vista!=="lis";
+  $("#vMes").setAttribute("aria-selected",vista==="mes");$("#vSem").setAttribute("aria-selected",vista==="sem");$("#vLis").setAttribute("aria-selected",vista==="lis");
+  $("#prev").hidden=$("#next").hidden=vista==="lis";
   const hoy=iso(new Date()),evs=visibles();
+  if(vista==="lis")return renderLista();
   if(vista==="mes"){
     $("#titulo").textContent=cap(`${MESES[cursor.getMonth()]} ${cursor.getFullYear()}`);
     const first=new Date(cursor.getFullYear(),cursor.getMonth(),1),start=new Date(first);start.setDate(1-((first.getDay()+6)%7));
     let h=["lun","mar","mié","jue","vie","sáb","dom"].map(d=>`<div class="dow">${d}</div>`).join("");
     for(let i=0;i<42;i++){
       const d=new Date(start);d.setDate(start.getDate()+i);const k=iso(d),de=evs.filter(e=>e.fecha===k);
-      h+=`<div class="day ${d.getMonth()!==first.getMonth()?"out":""} ${k===hoy?"today":""}" data-d="${k}" tabindex="0" role="button" aria-label="${esc(fechaLarga(k))}"><span class="n">${d.getDate()}</span>${de.slice(0,3).map(e=>`<button class="chip" data-ev="${e.id}">${esc(hora(e.ini).replace(" ",""))} ${esc(e.titulo)}</button>`).join("")}${de.length>3?`<div class="more">+${de.length-3} más</div>`:""}</div>`;
+      h+=`<div class="day ${d.getMonth()!==first.getMonth()?"out":""} ${k===hoy?"today":""}" data-d="${k}" tabindex="0" role="button" aria-label="${esc(fechaLarga(k))}"><span class="n">${d.getDate()}</span>${de.slice(0,3).map(e=>`<button class="chip e-${e.eje}" data-ev="${e.id}" title="${esc(tituloEv(e))}">${esc(horaCorta(e.ini))} ${esc(e.titulo)}</button>`).join("")}${de.length>3?`<div class="more">+${de.length-3} más</div>`:""}</div>`;
     }
     $("#calMes").innerHTML=h;
   }else{
@@ -574,7 +712,7 @@ function renderCal(){
     let h="";
     for(let i=0;i<7;i++){
       const d=new Date(a);d.setDate(a.getDate()+i);const k=iso(d),de=evs.filter(e=>e.fecha===k);
-      h+=`<div class="wd ${k===hoy?"today":""}" data-d="${k}"><div class="wh">${DIAS[d.getDay()].slice(0,3)} <b>${d.getDate()}</b></div>${de.map(e=>`<button class="wev" data-ev="${e.id}">${esc(e.titulo)}<span>${esc(hora(e.ini))}${e.lugar?" · "+esc(e.lugar):""}${e.con?" · con "+esc(e.con):""}${e.meet?" · Meet":""}</span></button>`).join("")}</div>`;
+      h+=`<div class="wd ${k===hoy?"today":""}" data-d="${k}"><div class="wh">${DIAS[d.getDay()].slice(0,3)} <b>${d.getDate()}</b></div>${de.map(e=>`<button class="wev e-${e.eje}" data-ev="${e.id}" title="${esc(tituloEv(e))}">${esc(e.titulo)}<span>${esc(hora(e.ini))}${e.lugar?" · "+esc(e.lugar):""}${e.con?" · con "+esc(e.con):""}${e.meet?" · Meet":""}</span></button>`).join("")}</div>`;
     }
     $("#calSem").innerHTML=h;
   }
@@ -586,7 +724,8 @@ function renderPend(){
     const posible=!p.fecha||!p.ini,c=choque(p);
     const cuando=p.fecha?`${cap(fechaLarga(p.fecha))}${p.ini?" · "+hora(p.ini)+(p.fin?" a "+hora(p.fin):""):" · falta la hora"}`:"Sin fecha confirmada"+(p.plazo?" · lo quieren: "+p.plazo:"");
     const quien=[p.de&&"De "+p.de,p.org].filter(Boolean).join(" · ");
-    return`<div class="pc"><div class="t">${esc(p.titulo||p.tipo||"Mensaje de "+(p.de||"alguien"))}${p.tipo&&p.titulo?`<span class="pill">${esc(p.tipo)}</span>`:""}${posible?`<span class="pill">Posible</span>`:""}${p.preguntado?`<span class="pill">Ya preguntaste</span>`:""}</div>
+    const dias=p.recibido?Math.floor((Date.now()-new Date(p.recibido))/864e5):0;
+    return`<div class="pc"><div class="t">${esc(p.titulo||p.tipo||"Mensaje de "+(p.de||"alguien"))}${p.tipo&&p.titulo?`<span class="pill">${esc(p.tipo)}</span>`:""}${posible?`<span class="pill">Posible</span>`:""}${p.preguntado?`<span class="pill">Ya preguntaste</span>`:""}${dias>=2?`<span class="pill alerta">${dias} días sin responder</span>`:""}</div>
     ${p.resumen?`<div class="m">${esc(p.resumen)}</div>`:""}
     ${quien?`<div class="m">${esc(quien)}</div>`:""}
     ${p.persona?`<div class="m">Buscan a: ${esc(p.persona)}</div>`:""}
@@ -641,7 +780,7 @@ function formPend(p){
   async function leerIA(auto){
     const txt=f.elements.texto.value.trim();
     if(!txt||(auto&&(!S.cfg.key||txt.length<20)))return;
-    if(!S.cfg.key){toast("Pega tu clave en Ajustes IA");return}
+    if(!S.cfg.key){toast("Pega tu clave en Ajustes");return}
     const id=++rid,est=$("#est"),b=$("#ia");est.textContent="· leyendo con IA…";b.disabled=true;
     try{const a=await extraerIA(txt,new Date());if(id!==rid)return;
       CAMPOS.forEach(k=>{if(a[k]&&(!auto||!tocado.has(k))){f.elements[k].value=a[k];if(!auto)tocado.add(k)}});est.textContent="· revisa lo que entendió la IA"}
@@ -692,7 +831,7 @@ function formImportar(){
   raw.addEventListener("input",analizarChat);yoS.onchange=analizarChat;$("#fmt").onchange=analizarChat;
   $("#ej").onclick=()=>{raw.value=chatEjemplo();analizarChat();yoS.value="+57 300 000 0000";analizarChat()};
   $("#iaImp").onclick=async()=>{
-    if(!S.cfg.key){toast("Pega tu clave en Ajustes IA");return}
+    if(!S.cfg.key){toast("Pega tu clave en Ajustes");return}
     const lista=cands.filter(c=>!c.pasada&&!c.dup);if(!lista.length){toast("No hay mensajes para leer");return}
     const b=$("#iaImp");b.disabled=true;let ok=0;
     for(const [i,c] of lista.entries()){b.textContent=`Leyendo ${i+1} de ${lista.length}…`;
@@ -712,7 +851,7 @@ function formImportar(){
 /* Aceptar, preguntar o rechazar: siempre con una respuesta lista para WhatsApp */
 function textoRespuesta(modo,p){
   const sal=`Hola${p.de?" "+p.de:""}, gracias por la invitación${p.titulo?" a *"+p.titulo+"*":""}.`;
-  if(modo==="aceptar")return`${sal} Confirmo mi asistencia${p.fecha?" el "+fechaLarga(p.fecha):""}${p.ini?" a las "+hora(p.ini):""}. ¡Nos vemos!${p.meet?"\nTe comparto el enlace de la reunión: "+p.meet:""}`;
+  if(modo==="aceptar")return`${sal} ${punto(`Confirmo mi asistencia${p.fecha?" el "+fechaLarga(p.fecha):""}${p.ini?" a las "+hora(p.ini):""}`)} ¡Nos vemos!${p.meet?"\nTe comparto el enlace de la reunión: "+p.meet:""}`;
   if(modo==="rechazar")return`${sal} Lamentablemente no podré asistir. Quedo pendiente de la próxima actividad.`;
   const falta=[!p.fecha&&"la fecha",!p.ini&&"la hora",!p.lugar&&"el lugar"].filter(Boolean);
   return`${sal} ¿Me confirmas ${falta.length?falta.join(", ").replace(/, ([^,]*)$/," y $1"):"los detalles"}?`;
@@ -750,7 +889,7 @@ function responder(p,modo){
     },er=>{bMeet.disabled=false;est.textContent=er.message;toast(er.message)});
   };
   $("#x").onclick=cerrar;
-  $("#ia").onclick=async()=>{if(!S.cfg.key){toast("Pega tu clave en Ajustes IA");return}
+  $("#ia").onclick=async()=>{if(!S.cfg.key){toast("Pega tu clave en Ajustes");return}
     const b=$("#ia");b.textContent="Escribiendo…";
     try{t.value=await ia([{role:"user",content:promptRespuesta(modo,datos())}]);editado=true}catch(e){toast(e.message)}
     b.textContent="Redactar con IA"};
@@ -787,8 +926,9 @@ function verDia(k){
   abrir(`<div class="row between"><h2>${esc(cap(fechaLarga(k)))}</h2><button type="button" class="btn sm" id="x">Cerrar</button></div>
   ${evs.length?`<p class="hint" style="margin:6px 0 0">${evs.length} ${evs.length===1?"actividad":"actividades"}</p>`+evs.map(e=>{
     const pe=e.desde&&S.pend.find(p=>p.id===e.desde);
-    return`<div class="pc" style="margin-top:10px"><div class="t">${esc(e.titulo)}</div>
+    return`<div class="pc e-${e.eje}" style="margin-top:10px;border-left:4px solid var(--ec,var(--line))"><div class="t">${esc(e.titulo)}</div>
     <div class="m">${esc(hora(e.ini))}${e.fin?" a "+esc(hora(e.fin)):""} · ${esc(EJES[e.eje]||"")}</div>
+    ${e.asis!==undefined&&e.asis!==""?`<div class="m"><span class="pill ok" style="margin:0">Asistieron ${esc(e.asis)} ${+e.asis===1?"persona":"personas"}</span></div>`:""}
     ${e.lugar?`<div class="m">Lugar: ${esc(e.lugar)}</div>`:""}
     ${e.con?`<div class="m">Con: ${esc(e.con)}</div>`:""}
     ${e.obj?`<div class="m">${esc(e.obj)}</div>`:""}
@@ -805,9 +945,9 @@ function verDia(k){
 function invitacion(e,tono){
   const f=`${fechaLarga(e.fecha)}, de ${hora(e.ini)}${e.fin?" a "+hora(e.fin):""}`;
   const lug=(e.lugar?`\nLugar: ${e.lugar}`:"")+(e.meet?`\nÚnete por Meet: ${e.meet}`:"");const obj=e.obj?`\n${e.obj}`:"";
-  if(tono==="cercano")return`¡Hola! 👋 Te esperamos en *${e.titulo}* el ${f}.${lug}${obj}\n¿Nos confirmas si vienes? 🙌`;
-  if(tono==="recordatorio")return`Recordatorio: *${e.titulo}* es el ${f}.${lug}\nPor favor confirma tu asistencia.`;
-  return`Cordial saludo.\nFondacio los invita a *${e.titulo}*, el ${f}.${lug}${obj}\nAgradecemos confirmar su asistencia.`;
+  if(tono==="cercano")return`¡Hola! 👋 ${punto(`Te esperamos en *${e.titulo}* el ${f}`)}${lug}${obj}\n¿Nos confirmas si vienes? 🙌`;
+  if(tono==="recordatorio")return`${punto(`Recordatorio: *${e.titulo}* es el ${f}`)}${lug}\nPor favor confirma tu asistencia.`;
+  return`Cordial saludo.\n${punto(`Fondacio los invita a *${e.titulo}*, el ${f}`)}${lug}${obj}\nAgradecemos confirmar su asistencia.`;
 }
 function formEvento(e,fecha,desdeDia){
   const n=!e;e=e||{titulo:"",eje:"form",fecha:fecha||iso(new Date()),ini:"15:00",fin:"16:00",lugar:"",obj:""};
@@ -819,6 +959,8 @@ function formEvento(e,fecha,desdeDia){
   <label>Lugar<input name="lugar" value="${esc(e.lugar)}"></label>
   <label>Con quién (grupo, organización o persona)<input name="con" value="${esc(e.con||"")}"></label>
   <label>Notas<textarea name="obj" rows="2">${esc(e.obj)}</textarea></label>
+  <div class="two"><label>Asistentes (llénalo después de la actividad)<input type="number" name="asis" min="0" step="1" inputmode="numeric" value="${esc(e.asis??"")}" placeholder="Ej: 25"></label>
+  <p class="hint" style="align-self:end;margin:0 0 8px">Sirve para el informe del mes que se comparte con aliados y donantes.</p></div>
   ${htmlMeet(e)}
   <details class="box"><summary>Invitación para el grupo (opcional)</summary>
     <div class="row" style="margin:8px 0"><select id="tono" style="width:auto"><option value="formal">Formal</option><option value="cercano">Cercano</option><option value="recordatorio">Recordatorio</option></select><button type="button" class="btn sm" id="ia">Redactar con IA</button></div>
@@ -851,7 +993,7 @@ function formEvento(e,fecha,desdeDia){
       if(tp)actualizarGoogle(tp,e).then(()=>{e.gk=claveG(e);save();toast("Guardada y actualizada en Google Calendar")},er=>toast(er.message+" Los cambios quedaron solo aquí."))}};
   $("#wa").onclick=()=>abrirWa("",t.value);
   $("#cp").onclick=()=>navigator.clipboard.writeText(t.value).then(()=>toast("Copiado"),()=>toast("No se pudo copiar"));
-  $("#ia").onclick=async()=>{if(!S.cfg.key){toast("Pega tu clave en Ajustes IA");return}
+  $("#ia").onclick=async()=>{if(!S.cfg.key){toast("Pega tu clave en Ajustes");return}
     const b=$("#ia"),v=leer();b.textContent="Escribiendo…";
     try{t.value=await ia([{role:"user",content:`Redacta una invitación para un grupo de WhatsApp en español de Colombia, máximo 110 palabras, tono ${$("#tono").value}. Pide confirmación de asistencia y no inventes datos. Actividad: ${v.titulo}. Fecha: ${v.fecha?fechaLarga(v.fecha):"por definir"}. Hora: ${hora(v.ini)}${v.fin?" a "+hora(v.fin):""}. Lugar: ${v.lugar||"por definir"}. Notas: ${v.obj||"ninguna"}.`}]);editado=true}catch(err){toast(err.message)}
     b.textContent="Redactar con IA"};
@@ -859,7 +1001,8 @@ function formEvento(e,fecha,desdeDia){
 }
 function ajustes(){
   const c=S.cfg;
-  abrir(`<form id="fa"><h2>Ajustes de la IA</h2>
+  abrir(`<form id="fa"><div class="row between"><h2>Ajustes</h2><button type="button" class="btn sm" id="x2">Cerrar</button></div>
+  <h3>Asistente de IA <small>· opcional</small></h3>
   <label>Proveedor<select name="prov" id="prov">${Object.entries(PROV).map(([k,v])=>`<option value="${k}" ${k===c.prov?"selected":""}>${v.n}</option>`).join("")}</select></label>
   <p class="hint" id="donde" style="margin:6px 0 0"></p>
   <label>Clave API<input type="password" name="key" autocomplete="off" value="${esc(c.key)}"></label>
@@ -869,17 +1012,285 @@ function ajustes(){
   <label>ID de cliente OAuth de Google<input name="gcid" value="${esc(c.gcid||"")}" autocomplete="off" placeholder="${esc(GOOGLE_CLIENT_ID||"123456789-abc.apps.googleusercontent.com")}"></label>
   <p class="hint" style="margin:6px 0 0">${GOOGLE_CLIENT_ID?"La página ya trae uno configurado; deja esto vacío para usar ese.":"Se crea una sola vez en Google Cloud (los pasos están en el README). No es secreto."}${location.protocol==="file:"?" Abierta con doble clic no funciona: usa la dirección web o http://localhost.":""}</p>
   ${gTok?`<div class="row" style="margin-top:6px"><button type="button" class="btn sm" id="gOut">Desconectar Google</button></div>`:""}
-  <div class="row" style="margin-top:14px"><button class="btn pri">Guardar</button><button type="button" class="btn" id="x">Cancelar</button></div></form>`);
+  <div class="row" style="margin-top:14px"><button class="btn pri">Guardar</button><button type="button" class="btn" id="x">Cancelar</button></div>
+  <hr class="sep">
+  <h3>Tus datos</h3>
+  <p class="hint" style="margin:0 0 8px">La agenda se guarda solo en este navegador. Descarga una copia cada semana: sirve para no perder nada y para pasar la agenda a otro computador. ${c.ultimaCopia?"Última copia: "+esc(hace(c.ultimaCopia))+".":"Todavía no has descargado ninguna copia."}</p>
+  <div class="row"><button type="button" class="btn sm" id="dExp">Descargar copia de seguridad</button><button type="button" class="btn sm" id="dImp">Restaurar una copia</button><input type="file" id="fRest" accept=".json,application/json" hidden></div>
+  <div class="row" style="margin-top:8px"><button type="button" class="btn sm del" id="dVac">Empezar con la agenda vacía</button><button type="button" class="btn sm" id="dEj">Cargar datos de ejemplo</button></div>
+  <hr class="sep">
+  <h3>Apariencia</h3>
+  <label class="chk"><input type="checkbox" id="aGrande" ${c.grande?"checked":""}> Letra más grande</label>
+  <p class="hint">Fondacio Agenda · versión ${VERSION}</p></form>`);
   const f=$("#fa"),ayuda=()=>{const p=PROV[f.elements.prov.value];$("#donde").textContent="Saca la clave en "+p.donde;f.elements.key.placeholder=p.pre+"..."};
   let previo=c.prov;
   f.elements.prov.onchange=()=>{if(f.elements.model.value===PROV[previo].model)f.elements.model.value=PROV[f.elements.prov.value].model;previo=f.elements.prov.value;ayuda()};
   ayuda();
-  $("#x").onclick=cerrar;
+  $("#x").onclick=cerrar;$("#x2").onclick=cerrar;
+  $("#dExp").onclick=exportar;
+  $("#dImp").onclick=()=>$("#fRest").click();
+  $("#fRest").onchange=ev=>{const a=ev.target.files[0];if(a)restaurar(a);ev.target.value=""};
+  $("#dVac").onclick=()=>{if(vaciar())cerrar()};
+  $("#dEj").onclick=()=>{if(cargarEjemplo())cerrar()};
+  $("#aGrande").onchange=ev=>{S.cfg.grande=ev.target.checked;save();aplicarApariencia()};
   f.onsubmit=ev=>{ev.preventDefault();const d=Object.fromEntries(new FormData(f));
     const gcid=(d.gcid||"").trim();if(gcid!==(S.cfg.gcid||""))gTok="";
     S.cfg={...S.cfg,key:d.key.trim(),prov:d.prov,model:d.model.trim()||PROV[d.prov].model,gcid};save();cerrar();renderChat();toast("Ajustes guardados")};
   const gOut=$("#gOut");if(gOut)gOut.onclick=()=>{try{google.accounts.oauth2.revoke(gTok,()=>{})}catch(e){}gTok="";gOut.remove();toast("Google desconectado")};
 }
+
+/* ---------- tus datos: copia de seguridad, restaurar, empezar de cero ---------- */
+function exportar(){
+  const {key,...cfgSinClave}=S.cfg;
+  const copia={app:"fondacio-agenda",version:VERSION,creada:new Date().toISOString(),
+    datos:{eventos:S.eventos,pend:S.pend,contactos:S.contactos,chat:S.chat,cfg:cfgSinClave}};
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(copia,null,1)],{type:"application/json"}));
+  a.download=`fondacio-agenda-copia-${iso(new Date())}.json`;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+  S.cfg.ultimaCopia=new Date().toISOString();save();
+  toast("Copia descargada. Guárdala en Drive o en una USB");
+}
+function restaurar(archivo){
+  const r=new FileReader();
+  r.onload=()=>{let c;
+    try{c=JSON.parse(r.result)}catch(e){toast("Ese archivo no es una copia de Fondacio Agenda");return}
+    const d=c&&c.app==="fondacio-agenda"&&c.datos;
+    if(!d||!Array.isArray(d.eventos)||!Array.isArray(d.pend)){toast("Ese archivo no es una copia de Fondacio Agenda");return}
+    const cuando=c.creada?" del "+fechaLarga(iso(new Date(c.creada))):"";
+    if(!confirm(`La copia${cuando} tiene ${d.eventos.length} actividades y ${d.pend.length} mensajes. Va a reemplazar lo que hay ahora en este navegador. ¿Continuar?`))return;
+    S.eventos=d.eventos;S.pend=d.pend;S.contactos=Array.isArray(d.contactos)?d.contactos:S.contactos;S.chat=Array.isArray(d.chat)?d.chat:[];
+    if(d.cfg)S.cfg={...d.cfg,...S.cfg,key:S.cfg.key};
+    S.ejemplo=false;save();render();renderChat();cerrar();toast("Copia restaurada");
+  };
+  r.onerror=()=>toast("No se pudo leer el archivo");
+  r.readAsText(archivo);
+}
+function vaciar(){
+  if(!confirm("Se borran todas las actividades, los pendientes y la conversación con el asistente de este navegador. Los ajustes y los correos guardados se conservan. ¿Empezar con la agenda vacía?"))return false;
+  S.eventos=[];S.pend=[];S.chat=[];S.ejemplo=false;save();render();renderChat();toast("Listo: tu agenda está vacía");return true;
+}
+function cargarEjemplo(){
+  if(!confirm("Se agregan 3 actividades y 3 mensajes de ejemplo para practicar. ¿Continuar?"))return false;
+  const s=seed();S.eventos.push(...s.eventos);S.pend.push(...s.pend);S.ejemplo=true;save();render();toast("Datos de ejemplo cargados");return true;
+}
+function aplicarApariencia(){document.documentElement.classList.toggle("grande",!!S.cfg.grande)}
+
+/* ---------- compartir la agenda e informe del mes ---------- */
+function rango(cual){
+  const h=new Date();h.setHours(0,0,0,0);const d=new Date(h),f=new Date(h);
+  if(cual==="hoy"){f.setDate(h.getDate()+1);return[iso(d),iso(f),"Hoy y mañana"]}
+  if(cual==="sem"||cual==="sig"){const l=lunes(h);if(cual==="sig")l.setDate(l.getDate()+7);const dm=new Date(l);dm.setDate(l.getDate()+6);
+    return[iso(l),iso(dm),`Semana del ${fechaLarga(iso(l))} al ${fechaLarga(iso(dm))}`]}
+  const m=cual==="mes"?h.getMonth():h.getMonth()+1,a=new Date(h.getFullYear(),m,1),z=new Date(h.getFullYear(),m+1,0);
+  return[iso(a),iso(z),cap(`${MESES[a.getMonth()]} de ${a.getFullYear()}`)];
+}
+function evsRango(a,b,soloEje){return S.eventos.filter(e=>e.fecha>=a&&e.fecha<=b&&(!soloEje||e.eje===soloEje)).sort(ord)}
+function textoAgenda(evs,titulo){
+  let t=`*Agenda de Fondacio*\n${titulo}\n`;
+  if(!evs.length)return t+"\nNo hay actividades programadas.";
+  let dia="";
+  evs.forEach(e=>{if(e.fecha!==dia){dia=e.fecha;t+=`\n*${cap(fechaLarga(e.fecha))}*\n`}
+    t+=`• ${hora(e.ini)}${e.fin?" a "+hora(e.fin):""}: ${e.titulo}${e.lugar?" ("+e.lugar+")":""}${e.meet?"\n   Meet: "+e.meet:""}\n`});
+  return t.trim();
+}
+const ESTILO_IMP=`body{font:13px/1.5 Arial,Helvetica,sans-serif;color:#111;margin:28px}h1{font-size:20px;margin:0}h2{font-size:15px;margin:18px 0 6px}p.s{color:#555;margin:2px 0 14px}
+table{width:100%;border-collapse:collapse;margin-top:6px}th,td{border:1px solid #ccc;padding:5px 7px;text-align:left;vertical-align:top}th{background:#1F4FD8;color:#fff}
+.k{display:inline-block;border:1px solid #ccc;border-radius:8px;padding:6px 12px;margin:0 8px 8px 0}.k b{font-size:18px;display:block}
+.pie{margin-top:24px;color:#777;font-size:11px}@page{margin:14mm}`;
+function imprimir(titulo,cuerpo){
+  const w=window.open("","_blank");
+  if(!w){toast("El navegador bloqueó la ventana. Permite las ventanas emergentes para imprimir");return}
+  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc(titulo)}</title><style>${ESTILO_IMP}</style></head><body>${cuerpo}<p class="pie">Fundación Fondacio · Altos de Cazucá · Generado con Fondacio Agenda el ${esc(fechaLarga(iso(new Date())))}</p><script>window.onload=function(){window.print()}<\/script></body></html>`);
+  w.document.close();
+}
+function tablaImp(evs,conAsis){
+  return`<table><tr><th>Fecha</th><th>Hora</th><th>Actividad</th><th>Eje</th><th>Lugar</th><th>Con quién</th>${conAsis?"<th>Asistentes</th>":""}</tr>${evs.map(e=>`<tr><td>${esc(cap(fechaLarga(e.fecha)))}</td><td>${esc(hora(e.ini))}${e.fin?" a "+esc(hora(e.fin)):""}</td><td>${esc(e.titulo)}</td><td>${esc(EJES[e.eje]||"")}</td><td>${esc(e.lugar||"")}</td><td>${esc(e.con||"")}</td>${conAsis?`<td>${esc(e.asis??"")}</td>`:""}</tr>`).join("")}</table>`;
+}
+function datosInforme(mes){
+  const evs=S.eventos.filter(e=>e.fecha.startsWith(mes)).sort(ord),hoy=iso(new Date());
+  const porEje=Object.keys(EJES).map(k=>[k,evs.filter(e=>e.eje===k).length]);
+  const conDato=evs.filter(e=>e.asis!==undefined&&e.asis!==""),asis=conDato.reduce((s,e)=>s+(+e.asis||0),0);
+  const rec=S.pend.filter(p=>p.recibido&&iso(new Date(p.recibido)).startsWith(mes));
+  return{evs,porEje,conDato,asis,hechas:evs.filter(e=>e.fecha<hoy).length,prox:evs.filter(e=>e.fecha>=hoy).length,
+    rec:rec.length,acep:rec.filter(p=>p.estado==="aceptada").length,rech:rec.filter(p=>p.estado==="rechazada").length,porResp:rec.filter(p=>p.estado==="pendiente").length};
+}
+function textoInforme(mes,d){
+  const[a,m]=mes.split("-").map(Number),nom=`${MESES[m-1]} de ${a}`;
+  let t=`*Informe de actividades · ${nom}*\nFundación Fondacio · Altos de Cazucá\n\n`;
+  t+=`• Actividades: ${d.evs.length} (${d.hechas} realizadas, ${d.prox} por realizar)\n`;
+  t+=`  ${d.porEje.filter(x=>x[1]).map(([k,n])=>EJES[k]+": "+n).join(" · ")||"Sin actividades"}\n`;
+  t+=`• Personas que asistieron: ${d.asis}${d.conDato.length<d.evs.length?` (dato registrado en ${d.conDato.length} de ${d.evs.length} actividades)`:""}\n`;
+  t+=`• Invitaciones y mensajes recibidos: ${d.rec} (${d.acep} aceptados, ${d.rech} rechazados, ${d.porResp} por responder)\n`;
+  if(d.evs.length)t+=`\n*Actividades*\n`+d.evs.map(e=>`• ${cap(fechaLarga(e.fecha))}: ${e.titulo}${e.asis!==undefined&&e.asis!==""?" · "+e.asis+" asistentes":""}`).join("\n");
+  return t;
+}
+function compartir(tab){
+  tab=tab||"ag";
+  const meses=[...new Set([iso(new Date()).slice(0,7),...S.eventos.map(e=>e.fecha.slice(0,7))])].sort().reverse();
+  abrir(`<div class="row between"><h2>Compartir</h2><button type="button" class="btn sm" id="x">Cerrar</button></div>
+  <div class="seg tabs2" role="tablist"><button role="tab" id="cAg" aria-selected="${tab==="ag"}">Agenda</button><button role="tab" id="cInf" aria-selected="${tab==="inf"}">Informe del mes</button></div>
+  <div id="cBody"></div>`);
+  $("#x").onclick=cerrar;$("#cAg").onclick=()=>compartir("ag");$("#cInf").onclick=()=>compartir("inf");
+  const cuerpo=$("#cBody");
+  if(tab==="ag"){
+    cuerpo.innerHTML=`<p class="hint">Envía la agenda a un grupo de WhatsApp o imprímela para la cartelera.</p>
+    <div class="two"><label>¿Qué período?<select id="cRan"><option value="hoy">Hoy y mañana</option><option value="sem" selected>Esta semana</option><option value="sig">La próxima semana</option><option value="mes">Este mes</option><option value="mes2">El próximo mes</option></select></label>
+    <label>Eje<select id="cEje"><option value="">Todos los ejes</option>${Object.entries(EJES).map(([k,v])=>`<option value="${k}" ${k===ejeSel?"selected":""}>${v}</option>`).join("")}</select></label></div>
+    <label>Mensaje (puedes editarlo)<textarea id="cTxt" rows="9"></textarea></label>
+    <div class="row" style="margin-top:10px"><button type="button" class="btn pri" id="cWa">Enviar por WhatsApp</button><button type="button" class="btn" id="cCp">Copiar</button><button type="button" class="btn" id="cPr">Imprimir</button></div>`;
+    const act=()=>{const[a,b,t]=rango($("#cRan").value);$("#cTxt").value=textoAgenda(evsRango(a,b,$("#cEje").value),t)};
+    $("#cRan").onchange=act;$("#cEje").onchange=act;act();
+    $("#cWa").onclick=()=>abrirWa("",$("#cTxt").value);
+    $("#cCp").onclick=()=>navigator.clipboard.writeText($("#cTxt").value).then(()=>toast("Copiado"),()=>toast("No se pudo copiar"));
+    $("#cPr").onclick=()=>{const[a,b,t]=rango($("#cRan").value),e=$("#cEje").value,evs=evsRango(a,b,e);
+      imprimir("Agenda de Fondacio",`<h1>Agenda de Fondacio</h1><p class="s">${esc(t)}${e?" · "+esc(EJES[e]):""}</p>${evs.length?tablaImp(evs,false):"<p>No hay actividades programadas.</p>"}`)};
+  }else{
+    cuerpo.innerHTML=`<p class="hint">Un resumen para compartir con la coordinación, aliados o donantes. Para contar asistentes, llena el campo «Asistentes» de cada actividad.</p>
+    <label>Mes<select id="cMes" style="width:auto;display:block;margin-top:4px">${meses.map(m=>{const[a,n]=m.split("-").map(Number);return`<option value="${m}" ${m===iso(new Date()).slice(0,7)?"selected":""}>${cap(MESES[n-1])} de ${a}</option>`}).join("")}</select></label>
+    <div id="cRes"></div>
+    <label>Texto para compartir<textarea id="cTxt" rows="8"></textarea></label>
+    <div class="row" style="margin-top:10px"><button type="button" class="btn pri" id="cWa">Enviar por WhatsApp</button><button type="button" class="btn" id="cCp">Copiar</button><button type="button" class="btn" id="cPr">Imprimir</button></div>`;
+    const act=()=>{const m=$("#cMes").value,d=datosInforme(m),mx=Math.max(1,...d.porEje.map(x=>x[1]));
+      $("#cRes").innerHTML=`<div class="stats"><div class="stat"><b>${d.evs.length}</b><span>actividades</span></div><div class="stat"><b>${d.asis}</b><span>personas asistieron</span></div><div class="stat"><b>${d.rec}</b><span>mensajes recibidos</span></div><div class="stat"><b>${d.acep}</b><span>invitaciones aceptadas</span></div></div>
+      ${d.porEje.map(([k,n])=>`<div class="barra e-${k}"><span>${EJES[k]}</span><i style="width:${n/mx*100}%;${n?"":"min-width:0"}"></i><span>${n}</span></div>`).join("")}
+      ${d.conDato.length<d.evs.length?`<p class="hint">Faltan los asistentes de ${d.evs.length-d.conDato.length} ${d.evs.length-d.conDato.length===1?"actividad":"actividades"}.</p>`:""}`;
+      $("#cTxt").value=textoInforme(m,d)};
+    $("#cMes").onchange=act;act();
+    $("#cWa").onclick=()=>abrirWa("",$("#cTxt").value);
+    $("#cCp").onclick=()=>navigator.clipboard.writeText($("#cTxt").value).then(()=>toast("Copiado"),()=>toast("No se pudo copiar"));
+    $("#cPr").onclick=()=>{const m=$("#cMes").value,d=datosInforme(m),[a,n]=m.split("-").map(Number);
+      imprimir("Informe de actividades",`<h1>Informe de actividades · ${esc(MESES[n-1])} de ${a}</h1><p class="s">Fundación Fondacio · Altos de Cazucá</p>
+      <div><span class="k"><b>${d.evs.length}</b>actividades</span><span class="k"><b>${d.hechas}</b>realizadas</span><span class="k"><b>${d.asis}</b>asistentes</span><span class="k"><b>${d.rec}</b>mensajes recibidos</span><span class="k"><b>${d.acep}</b>aceptados</span></div>
+      <h2>Por eje de trabajo</h2><p>${d.porEje.map(([k,c])=>esc(EJES[k])+": "+c).join(" · ")}</p>
+      <h2>Actividades</h2>${d.evs.length?tablaImp(d.evs,true):"<p>No hay actividades este mes.</p>"}`)};
+  }
+}
+
+/* ---------- ayuda ---------- */
+function abrirAyuda(){
+  abrir(`<div class="ayuda"><div class="row between"><h2>Ayuda</h2><button type="button" class="btn sm" id="x">Cerrar</button></div>
+  <p class="hint">¿Primera vez? El recorrido guiado te muestra la agenda en un minuto.</p>
+  <div class="row"><button type="button" class="btn pri" id="hTour">Ver el recorrido guiado</button></div>
+  <h3>Cómo hacer…</h3>
+  <details class="box"><summary>Guardar una invitación que llegó por WhatsApp</summary><ol>
+    <li>En WhatsApp mantén presionado el mensaje y toca <strong>Copiar</strong>.</li>
+    <li>Aquí, en <strong>Pendientes</strong>, toca <strong>+ Guardar un mensaje</strong> y pégalo.</li>
+    <li>Revisa lo que entendió la agenda (fecha, hora, lugar) y corrige lo que haga falta.</li>
+    <li>Toca <strong>Guardar como pendiente</strong>. Todavía no entra al calendario.</li></ol></details>
+  <details class="box"><summary>Responder: aceptar, preguntar o rechazar</summary><ul>
+    <li><strong>Aceptar</strong>: la actividad pasa al calendario y se abre WhatsApp con la respuesta lista.</li>
+    <li><strong>Preguntar</strong>: pide solo lo que falta (fecha, hora o lugar). El mensaje sigue en Pendientes.</li>
+    <li><strong>Rechazar</strong>: responde con amabilidad y lo archiva en Respondidas.</li>
+    <li>¿Te equivocaste? En <strong>Respondidas</strong> toca <strong>Deshacer</strong>.</li></ul></details>
+  <details class="box"><summary>Crear una actividad directamente</summary><ol>
+    <li>Toca <strong>+ Crear actividad</strong> (o un día del calendario).</li>
+    <li>Escribe el nombre, elige el eje, la fecha y la hora, y toca <strong>Guardar</strong>.</li>
+    <li>Después de la actividad, ábrela y anota cuántas personas asistieron.</li></ol></details>
+  <details class="box"><summary>Enviar la agenda de la semana a un grupo</summary><ol>
+    <li>Toca <strong>Compartir</strong> arriba.</li>
+    <li>Elige el período (por ejemplo, <em>Esta semana</em>) y revisa el texto.</li>
+    <li>Toca <strong>Enviar por WhatsApp</strong> y elige el grupo. También puedes imprimirla para la cartelera.</li></ol></details>
+  <details class="box"><summary>Sacar el informe del mes</summary><ol>
+    <li>Toca <strong>Compartir</strong> y luego <strong>Informe del mes</strong>.</li>
+    <li>Elige el mes. Verás cuántas actividades hubo, por eje, y cuántas personas asistieron.</li>
+    <li>Envíalo por WhatsApp o imprímelo para un aliado o donante.</li></ol></details>
+  <details class="box"><summary>Crear una reunión de Google Meet</summary><ol>
+    <li>Al crear una actividad o al aceptar, abre <strong>Reunión en Google Meet</strong>.</li>
+    <li>Marca los correos de los invitados y toca <strong>Crear reunión en Meet</strong>.</li>
+    <li>La primera vez Google pide permiso. Si dice «Google no ha verificado esta app», toca <strong>Continuar</strong>.</li></ol></details>
+  <details class="box"><summary>No perder la información (copia de seguridad)</summary><ol>
+    <li>En <strong>Ajustes</strong> toca <strong>Descargar copia de seguridad</strong> una vez por semana.</li>
+    <li>Guarda el archivo en Google Drive o en una USB.</li>
+    <li>En otro computador, abre la agenda y en Ajustes toca <strong>Restaurar una copia</strong>.</li></ol></details>
+  <h3>Preguntas frecuentes</h3>
+  <details class="box"><summary>Abrí la agenda en otro computador y está vacía</summary><p>Cada navegador guarda su propia agenda. Usa siempre el mismo equipo, o pasa la información con la copia de seguridad.</p></details>
+  <details class="box"><summary>Al responder no se abre WhatsApp</summary><p>En el computador necesitas WhatsApp Web o la aplicación de escritorio con la sesión abierta. Si el navegador bloquea la ventana, permite las ventanas emergentes para esta página.</p></details>
+  <details class="box"><summary>La agenda no entendió bien la fecha o la hora</summary><p>Corrígela a mano antes de guardar. Entiende mejor textos como «14 de noviembre», «14/11», «mañana», «el jueves», «3 pm» o «de 3 a 5».</p></details>
+  <details class="box"><summary>¿Qué es el Asistente IA y es obligatorio?</summary><p>Es opcional. Con una clave gratuita (en Ajustes) puede leer mensajes enredados, redactar respuestas y contestar preguntas sobre la agenda. Nunca hace cambios sin que tú los apruebes. Sin clave, todo lo demás funciona igual.</p></details>
+  <details class="box"><summary>¿Quién puede ver la información?</summary><p>Solo quien use este navegador. Los mensajes traen datos personales de la comunidad: úsalos solo para coordinar la agenda de la fundación (Ley 1581 de 2012).</p></details>
+  <p class="hint" style="margin-top:16px">Fondacio Agenda · versión ${VERSION} · Proyecto con la Universidad Católica de Colombia</p></div>`);
+  $("#x").onclick=cerrar;
+  $("#hTour").onclick=()=>{cerrar();tour.iniciar(true)};
+}
+
+/* ---------- recorrido guiado (se muestra solo la primera vez; se repite desde Ayuda) ---------- */
+const TOUR_KEY="fondacio_tour_v1";
+const tour={
+  i:0,pasos:[],el:null,
+  definir(){
+    const pend=()=>$("#listaPend .acts");
+    return[
+      {t:"¡Te damos la bienvenida a la agenda de Fondacio!",x:"Aquí organizas las actividades de la fundación y respondes las invitaciones que llegan por WhatsApp. Te mostramos cómo funciona en un minuto.",ini:true},
+      {s:"#bNew",t:"Crear una actividad",x:"Anota aquí una actividad que ya está confirmada: un taller, una reunión, una jornada. Después de hacerla, puedes anotar cuántas personas asistieron."},
+      {s:()=>vista==="mes"?$("#calMes"):vista==="sem"?$("#calSem"):$("#calLis"),t:"Tu calendario",x:"Toca un día para ver sus actividades o agregar otra. Cada color es un eje de trabajo: Formación, Comunidad, Economía circular y Equipo.",prep:()=>panel(false)},
+      {s:".seg[role=tablist]",t:"Mes, Semana o Lista",x:"Cambia la forma de ver la agenda. En el celular, la vista Lista es la más cómoda y tiene un buscador."},
+      {s:"#ley",t:"Ver solo un eje",x:"Toca un eje para ver solo sus actividades. Tócalo otra vez para ver todo.",solo:()=>getComputedStyle($("#ley")).display!=="none"&&$("#ley").offsetParent},
+      {s:"#bPend",t:"Guarda lo que llega por WhatsApp",x:"Copia la invitación en WhatsApp y pégala aquí. La agenda entiende la fecha, la hora y el lugar. Queda en Pendientes hasta que decidas.",prep:()=>panel(false)},
+      {s:pend,t:"Decide con un toque",x:"Aceptar la pasa al calendario y abre WhatsApp con la respuesta lista. Preguntar pide lo que falta. Rechazar responde con amabilidad.",prep:()=>panel(false)},
+      {s:"#bImp",t:"Importar un chat completo",x:"Para los grupos: exporta el chat desde WhatsApp y pégalo. La agenda encuentra las invitaciones entre todos los mensajes."},
+      {s:"#tAsis",t:"Asistente con IA (opcional)",x:"Pregúntale «¿qué hay esta semana?» o pídele redactar una invitación. Se activa con una clave gratuita en Ajustes."},
+      {s:"#bShare",t:"Compartir e informe del mes",x:"Envía la agenda de la semana a un grupo de WhatsApp, imprímela para la cartelera o saca el informe del mes para aliados y donantes."},
+      {s:"#bSet",t:"Ajustes",x:"La IA, Google Meet, la copia de seguridad para no perder nada y la opción de letra más grande."},
+      {s:"#bHelp",t:"Ayuda siempre a mano",x:"Aquí encuentras guías cortas, preguntas frecuentes y puedes repetir este recorrido cuando quieras."},
+      {t:"¡Listo para empezar!",x:"",fin:true}
+    ];
+  },
+  objetivo(p){if(!p.s)return null;const e=typeof p.s==="function"?p.s():$(p.s);if(!e||!e.getClientRects().length)return null;if(p.solo&&!p.solo())return null;return e},
+  iniciar(manual){
+    if(this.el)this.cerrar();
+    this.pasos=this.definir();this.i=0;this.manual=manual;
+    const bl=document.createElement("div");bl.className="tour-bloq";
+    const hu=document.createElement("div");hu.className="tour-hueco sin";
+    const ca=document.createElement("div");ca.className="tour-card";ca.setAttribute("role","dialog");ca.setAttribute("aria-modal","true");ca.setAttribute("aria-labelledby","tourT");
+    document.body.append(bl,hu,ca);this.el={bl,hu,ca};
+    this.teclas=ev=>{if(ev.key==="Escape")this.terminar();else if(ev.key==="ArrowRight")this.ir(1);else if(ev.key==="ArrowLeft")this.ir(-1)};
+    this.repos=()=>this.posicionar();
+    document.addEventListener("keydown",this.teclas);addEventListener("resize",this.repos);addEventListener("scroll",this.repos,true);
+    bl.onclick=()=>{};
+    this.mostrar();
+  },
+
+  ir(d){const n=this.i+d;if(n<0||n>=this.pasos.length)return;this.i=n;
+    const p=this.pasos[n];if(p.s){if(p.prep)p.prep();if(!this.objetivo(p))return this.ir(d)}
+    this.mostrar()},
+  mostrar(){
+    const p=this.pasos[this.i],{ca}=this.el;
+    if(p.prep)p.prep();
+    const vis=this.pasos.filter(x=>!x.s||this.objetivo(x)),k=vis.indexOf(p);
+    const ejemplo=p.fin&&S.ejemplo;
+    const texto=p.fin?(ejemplo?"Lo que ves son datos de ejemplo para practicar. Cuando quieras usar la agenda de verdad, empieza con ella vacía. También puedes hacerlo después desde Ajustes.":"Recuerda descargar una copia de seguridad cada semana desde Ajustes. Si tienes dudas, toca Ayuda."):p.x;
+    ca.className="tour-card"+(p.s?"":" centro");
+    ca.innerHTML=`<h2 id="tourT">${esc(p.t)}</h2><p>${esc(texto)}</p>
+      <div class="pie"><div class="pts" aria-label="Paso ${k+1} de ${vis.length}">${vis.map((_,j)=>`<i class="${j===k?"on":""}"></i>`).join("")}</div>
+      <div class="row">${p.ini?`<button type="button" class="btn sm" data-t="saltar">Ahora no</button><button type="button" class="btn sm pri" data-t="sig">Empezar el recorrido</button>`:
+        p.fin?(ejemplo?`<button type="button" class="btn sm" data-t="saltar">Seguir con los ejemplos</button><button type="button" class="btn sm pri" data-t="vaciar">Empezar con la agenda vacía</button>`:`<button type="button" class="btn sm pri" data-t="saltar">Terminar</button>`):
+        `<button type="button" class="btn sm" data-t="saltar">Salir</button>${k>1?`<button type="button" class="btn sm" data-t="ant">Atrás</button>`:""}<button type="button" class="btn sm pri" data-t="sig">Siguiente</button>`}</div></div>`;
+    ca.onclick=ev=>{const b=ev.target.closest("[data-t]");if(!b)return;const a=b.dataset.t;
+      if(a==="sig")this.ir(1);else if(a==="ant")this.ir(-1);else if(a==="saltar")this.terminar();else if(a==="vaciar"){this.terminar();vaciar()}};
+    const obj=this.objetivo(p);
+    if(obj)obj.scrollIntoView({block:"center",behavior:"instant"});
+    this.posicionar();
+    const f=ca.querySelector("[data-t=sig]")||ca.querySelector("[data-t=vaciar]")||ca.querySelector("[data-t=saltar]");if(f)f.focus({preventScroll:true});
+  },
+  posicionar(){
+    if(!this.el)return;const p=this.pasos[this.i],{hu,ca}=this.el,obj=this.objetivo(p);
+    if(!obj){hu.className="tour-hueco sin";hu.style.cssText="left:50%;top:50%";return}
+    const r=obj.getBoundingClientRect(),m=6,vw=innerWidth,vh=innerHeight;
+    const top=Math.max(4,r.top-m),left=Math.max(4,r.left-m),w=Math.min(r.width+2*m,vw-8),h=Math.min(r.height+2*m,vh-8);
+    hu.className="tour-hueco";hu.style.cssText=`left:${left}px;top:${top}px;width:${w}px;height:${h}px`;
+    if(matchMedia("(max-width:600px)").matches){ca.style.cssText="";
+      /* en el celular la tarjeta va abajo; si tapa lo resaltado, va arriba */
+      const ch=ca.offsetHeight;if(top+h>vh-ch-24)ca.style.cssText="top:12px!important;bottom:auto";return}
+    const cw=ca.offsetWidth,ch=ca.offsetHeight;
+    let y=top+h+12,x=Math.min(Math.max(12,left),vw-cw-12);
+    if(y+ch>vh-12){y=top-ch-12;if(y<12){y=Math.min(Math.max(12,top),vh-ch-12);x=left+w+12+cw<vw?left+w+12:Math.max(12,left-cw-12)}}
+    ca.style.cssText=`left:${x}px;top:${y}px`;
+  },
+  terminar(){try{localStorage.setItem(TOUR_KEY,"visto")}catch(e){}this.cerrar()},
+  cerrar(){if(!this.el)return;document.removeEventListener("keydown",this.teclas);removeEventListener("resize",this.repos);removeEventListener("scroll",this.repos,true);
+    Object.values(this.el).forEach(x=>x.remove());this.el=null;$("#bHelp").focus({preventScroll:true})}
+};
 
 /* ---------- IA ---------- */
 function contexto(){
@@ -892,7 +1303,7 @@ Pendientes por responder (mensajes de WhatsApp aún no aceptados): ${JSON.string
 Si el usuario pide crear o borrar actividades del calendario, explica en una frase y agrega AL FINAL un bloque \`\`\`json con {"acciones":[{"tipo":"crear","titulo":"","eje":"form","fecha":"AAAA-MM-DD","ini":"HH:MM","fin":"HH:MM","lugar":"","obj":""},{"tipo":"borrar","id":"..."}]}. No inventes datos que el usuario no dio: pregunta lo que falte. Si no piden cambios, no incluyas el bloque.`;
 }
 async function ia(msgs,sistema){
-  if(!S.cfg.key)throw new Error("Falta la clave en Ajustes IA");
+  if(!S.cfg.key)throw new Error("Falta la clave en Ajustes");
   let r;
   const P=PROV[S.cfg.prov]||PROV.groq;
   try{r=await fetch(P.url,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+S.cfg.key},
@@ -929,7 +1340,7 @@ function aplicar(acc){
 }
 function renderChat(){
   const el=$("#msgs");
-  if(!S.chat.length){el.innerHTML=`<div class="m2 s">Pregúntame por la agenda o por tus pendientes, o pídeme crear actividades y textos para redes.${S.cfg.key?"":"<br>Para activarme, pega tu clave en <strong>Ajustes IA</strong>."}</div>`}
+  if(!S.chat.length){el.innerHTML=`<div class="m2 s">Pregúntame por la agenda o por tus pendientes, o pídeme crear actividades y textos para redes.${S.cfg.key?"":"<br>Para activarme, pega tu clave en <strong>Ajustes</strong>."}</div>`}
   else el.innerHTML=S.chat.map((m,i)=>`<div class="m2 ${m.role==="user"?"u":m.role==="error"?"s":"a"}">${esc(m.texto??m.content)}${m.acc&&!m.hecho?`<div class="act">${m.acc.map(a=>"• "+esc(descr(a))).join("<br>")}<div class="row" style="margin-top:6px"><button class="btn sm pri" data-ap="${i}">Aplicar</button><button class="btn sm" data-no="${i}">Descartar</button></div></div>`:""}</div>`).join("");
   el.scrollTop=el.scrollHeight;
 }
@@ -950,10 +1361,18 @@ $("#tPend").onclick=()=>panel(false);
 $("#tAsis").onclick=()=>panel(true);
 $("#vMes").onclick=()=>{vista="mes";renderCal()};
 $("#vSem").onclick=()=>{vista="sem";renderCal()};
+$("#vLis").onclick=()=>{vista="lis";renderCal()};
+$("#buscar").addEventListener("input",renderLista);
 $("#hoy").onclick=()=>{cursor=new Date();renderCal()};
 $("#prev").onclick=()=>{vista==="mes"?cursor.setMonth(cursor.getMonth()-1,1):cursor.setDate(cursor.getDate()-7);renderCal()};
 $("#next").onclick=()=>{vista==="mes"?cursor.setMonth(cursor.getMonth()+1,1):cursor.setDate(cursor.getDate()+7);renderCal()};
-$("#fEje").onchange=e=>{ejeSel=e.target.value;renderCal()};
+$("#fEje").onchange=e=>{ejeSel=e.target.value;renderCal();renderFiltro()};
+$("#ley").onclick=e=>{const b=e.target.closest("[data-eje]");if(!b)return;ejeSel=ejeSel===b.dataset.eje?"":b.dataset.eje;renderCal();renderFiltro();
+  const nb=$(`#ley [data-eje="${b.dataset.eje}"]`);if(nb)nb.focus()};
+$("#bVaciar").onclick=vaciar;
+$("#bMantener").onclick=()=>{S.ejemplo=false;save();renderFiltro();toast("Puedes borrarlos cuando quieras desde Ajustes")};
+$("#bShare").onclick=()=>compartir();
+$("#bHelp").onclick=abrirAyuda;
 $("#bNew").onclick=()=>formEvento();
 $("#bPend").onclick=()=>formPend();
 $("#bImp").onclick=formImportar;
@@ -963,6 +1382,7 @@ function clicCal(e){
   const ev=e.target.closest("[data-ev]");if(ev){e.stopPropagation();const x=S.eventos.find(y=>y.id===ev.dataset.ev);return x&&verDia(x.fecha)}
   const d=e.target.closest("[data-d]");if(d)verDia(d.dataset.d)}
 $("#calMes").onclick=clicCal;$("#calSem").onclick=clicCal;
+$("#calLis").onclick=e=>{if(e.target.id==="bPasadas"){verPasadas=!verPasadas;renderLista();return}clicCal(e)};
 $("#calMes").onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset.d){e.preventDefault();verDia(e.target.dataset.d)}};
 function clicPend(e){
   const b=e.target.closest("[data-ac]");if(!b)return;
@@ -981,7 +1401,10 @@ $("#sug").onclick=e=>{if(e.target.tagName==="BUTTON")enviar(e.target.textContent
 dlg.addEventListener("click",e=>{if(e.target===dlg)cerrar()});
 dlg.addEventListener("click",e=>{const c=e.target.closest("[data-copiar]");if(c)navigator.clipboard.writeText(c.dataset.copiar).then(()=>toast("Link copiado"),()=>toast("No se pudo copiar"))});
 
-render();renderChat();
+aplicarApariencia();render();renderChat();
+/* La primera vez que alguien abre la agenda en este navegador, aparece el recorrido guiado. */
+let tourVisto=true;try{tourVisto=!!localStorage.getItem(TOUR_KEY)}catch(e){}
+if(!tourVisto&&!/[?&]sinTour\b/.test(location.search))setTimeout(()=>tour.iniciar(false),500);
 </script>
 </body>
 </html>
