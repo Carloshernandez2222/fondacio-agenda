@@ -1,6 +1,8 @@
-# Solo se sube la página, su README y el ejemplo de clave.
+# Solo se sube la página, su README, el ejemplo de clave y las pruebas.
 /*
 !/.gitignore
 !/README.md
 !/fondacio.html
 !/clave.example.js
+!/pruebas/
+/pruebas/copia_prueba.json
